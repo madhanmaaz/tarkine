@@ -4,7 +4,7 @@ const fs = require("fs")
 const dataFormatter = require("./dataFormatter")
 const compiler = require("./compiler")
 const helpers = require("./helpers")
-let registers = {}
+const registers = require("./registers")
 
 function register(obj) {
     if (typeof obj !== "object" || obj === null) {
@@ -12,7 +12,7 @@ function register(obj) {
         return
     }
 
-    registers = { ...registers, ...obj }
+    Object.assign(registers, obj)
 }
 
 function alterFilePath(filePath) {
