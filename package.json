@@ -3,6 +3,14 @@
   "version": "0.0.2",
   "description": "tarkine - A powerful and flexible template engine for Node.js applications.",
   "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madhanmaaz/tarkine"
+  },
+  "author": {
+    "name": "madhanmaaz",
+    "url": "http://madhanmaaz.netlify.app/"
+  },
   "files": [
     "src/",
     "README.md",
@@ -21,9 +29,5 @@
     "tarkine template",
     "tarkine template engine"
   ],
-  "author": {
-    "name": "madhanmaaz",
-    "url": "http://madhanmaaz.netlify.app/"
-  },
   "license": "ISC"
 }
