@@ -1,0 +1,29 @@
+{
+  "name": "tarkine",
+  "version": "0.0.1",
+  "description": "tarkine - A powerful and flexible template engine for Node.js applications.",
+  "main": "src/index.js",
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE",
+    "test.html",
+    "test.js"
+  ],
+  "scripts": {},
+  "keywords": [
+    "template",
+    "engine",
+    "html",
+    "rendering",
+    "express",
+    "tarkine",
+    "tarkine template",
+    "tarkine template engine"
+  ],
+  "author": {
+    "name": "madhanmaaz",
+    "url": "http://madhanmaaz.netlify.app/"
+  },
+  "license": "ISC"
+}

@@ -1,0 +1,55 @@
+comments {{# comments }}
+
+escape {{ username }}
+
+no escape {{- html }}
+
+fully escape {{= html }} <!-- including includes -->
+
+<!-- condition -->
+{{ if(status) }}
+<p>if block</p>
+{{ else if(status == 1) }}
+<p>else if</p>
+{{ else }}
+<p>else</p>
+{{/}}
+
+<!-- loops -->
+{{ for(value, index in array) }}
+<li>{{ index }} - {{ value }}</li>
+{{/}}
+
+{{ for(value, key in object) }}
+<li>{{ key }} - {{ value }}</li>
+{{/}}
+
+<!-- includes -->
+{{# include("./button", { text: "click" }, ) }}
+
+<!-- blocks -->
+{{define loginBtn(text, className) }}
+<button class="{{ className }}">{{ text }}</button>
+{{/}}
+
+{{ loginBtn("login", "login-btn-1") }}
+{{- loginBtn("login", "login-btn-2") }}
+{{= loginBtn("login", "login-btn-3") }}
+
+<!-- code -->
+{{~
+console.log("code execution block")
+
+function total(a, b) {
+return a + b
+}
+
+const newVar = "this is new var"
+}}
+
+{{ total(1, 2) }}
+{{ newVar }}
+
+<!-- attributes -->
+<button disabled="isLoggedIn">login</button>
+<button disabled="isLoggedIn === true">login</button>
