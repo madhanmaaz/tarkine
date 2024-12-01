@@ -2,44 +2,17 @@ const helpers = require("./helpers")
 const attributeModifier = require("./attributeModifier")
 
 const delimiterPattern = helpers.escapeRegExp(helpers.openDelimiter) +
-    "\\s*([~#-=/]|define\\s*|for\\s*\\(|if\\s*\\(|else)?\\s*([\\s\\S]*?)\\s*" +
+    "\\s*([~#-=/]|for\\s*\\(|if\\s*\\(|else)?\\s*([\\s\\S]*?)\\s*" +
     helpers.escapeRegExp(helpers.closeDelimiter)
-
-const timeStore = {
-    ifStart: false,
-    forStart: false,
-    defineStart: false,
-    resetStore() {
-        this.ifStart = false
-        this.forStart = false
-        this.defineStart = false
-    }
-}
 
 function handleDirective(type, content) {
     switch (type) {
-        case '/': {// close brackets
-            if (timeStore.ifStart || timeStore.forStart) {
-                timeStore.ifStart = false
-                timeStore.forStart = false
-                return "}\n;"
-            }
-
-            if (timeStore.defineStart) {
-                timeStore.defineStart = false
-                return "return function __includeRenderer__() {return __out;};}\n;"
-            }
-        }
-
-        // define block
-        case "define":
-            timeStore.defineStart = true
-            return `function ${content} {\nlet __out ='';\n`
+        case '/':
+            return "}\n;"
 
         // loops
         case "for (":
         case "for(": {
-            timeStore.forStart = true
             const [variables, data] = content.slice(0, -1).split(" in ")
             const [key, value] = variables.split(",")
 
@@ -49,10 +22,8 @@ function handleDirective(type, content) {
         // conditions
         case "if(":
         case "if (":
-            timeStore.ifStart = true
             return `if(${content}{\n`
         case "else":
-            timeStore.ifStart = true
             return content.startsWith("if") ? `} else ${content}{\n` : "} else {\n"
 
         case '#': // comment
@@ -115,7 +86,6 @@ function generate(template, errorStore) {
 
 function compile(template) {
     const errorStore = { line: 0 }
-    timeStore.resetStore()
 
     try {
         return generate(attributeModifier.modify(template), errorStore)

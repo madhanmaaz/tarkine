@@ -27,15 +27,6 @@ fully escape {{= html }} <!-- including includes -->
 <!-- includes -->
 {{# include("./button", { text: "click" }, ) }}
 
-<!-- blocks -->
-{{define loginBtn(text, className) }}
-<button class="{{ className }}">{{ text }}</button>
-{{/}}
-
-{{ loginBtn("login", "login-btn-1") }}
-{{- loginBtn("login", "login-btn-2") }}
-{{= loginBtn("login", "login-btn-3") }}
-
 <!-- code -->
 {{~
 console.log("code execution block")
@@ -51,5 +42,5 @@ const newVar = "this is new var"
 {{ newVar }}
 
 <!-- attributes -->
-<button disabled="isLoggedIn">login</button>
-<button disabled="isLoggedIn === true">login</button>
+<button disabled="islogin">login</button>
+<button disabled="islogin === true">login</button>

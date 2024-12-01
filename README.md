@@ -90,15 +90,6 @@ app.listen(3000)
 {{ include("./partial", { data: "value" }) }}
 ```
 
-- Blocks
-```js
-{{define blockName(param1, param2) }}
-  // block content
-{{/}}
-
-{{ blockName(arg1, arg2) }}
-```
-
 - Code Execution
 ```js
 {{~
