@@ -1,6 +1,6 @@
 {
   "name": "tarkine",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "tarkine - A powerful and flexible template engine for Node.js applications.",
   "main": "src/index.js",
   "repository": {
