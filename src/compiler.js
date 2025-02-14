@@ -2,7 +2,7 @@ const helpers = require("./helpers")
 const attributeModifier = require("./attributeModifier")
 
 const delimiterPattern = helpers.escapeRegExp(helpers.openDelimiter) +
-    "\\s*([~#-=/]|for\\s*\\(|if\\s*\\(|else)?\\s*([\\s\\S]*?)\\s*" +
+    "\\s*([~#=\\-\\/]|for\\s*\\(|if\\s*\\(|else)?\\s*([\\s\\S]*?)\\s*" +
     helpers.escapeRegExp(helpers.closeDelimiter)
 
 function handleDirective(type, content) {
