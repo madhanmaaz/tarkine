@@ -6,26 +6,18 @@ function handleDirective(type, content) {
             return "};"
 
         // loop
-        case "for": {
-            if (content.startsWith("(") && content.endsWith(")")) {
-                const [variables, data] = content.slice(1, -1).split(" in ")
-                const [key, value] = variables.split(",")
-                return `for(const [${value || '_'}, ${key}] of this.formatLoop(${data})){`
-            }
-
-            return `this.out += this.show(${content});`
+        case ":for": {
+            const [variables, data] = content.slice(1, -1).split(" in ")
+            const [key, value] = variables.split(",")
+            return `for(const [${value || '_'}, ${key}] of this.formatLoop(${data})){`
         }
 
         // condition
-        case "if": {
-            if (content.startsWith("(") && content.endsWith(")")) {
-                return `if${content}{`
-            }
+        case ":if":
+            return `if${content}{`
 
-            return `this.out += this.show(${content});`
-        }
 
-        case "else":
+        case ":else":
             return content.startsWith("if") ? `} else ${content}{` : "} else {"
 
         case '#': // comment
@@ -46,7 +38,7 @@ function handleDirective(type, content) {
 }
 
 function generate(template) {
-    const regexPattren = /\{\{(~|#|=|-|\/|for|if|else)?\s*([\s\S]*?)\s*\}\}/g
+    const regexPattren = /\{\{\s*(~|#|=|-|\/|:for|:if|:else)?\s*([\s\S]*?)\s*\}\}/g
     let code = "this.out = '';"
     let cursor = 0
     let match

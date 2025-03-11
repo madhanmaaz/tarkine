@@ -1,9 +1,8 @@
 {
   "name": "tarkine",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "tarkine - template engine.",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "browser": "dist/browser.js",
   "repository": {
     "type": "git",
@@ -19,7 +18,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build:node": "esbuild src/index.js --outfile=dist/index.js --platform=node --format=cjs --bundle --minify && esbuild src/index.js --outfile=dist/index.mjs --platform=node --format=esm --bundle --minify",
+    "build:node": "esbuild src/index.js --outfile=dist/index.js --platform=node --bundle --minify",
     "build:browser": "esbuild src/browser.js --outfile=dist/browser.js --platform=browser --global-name=tarkine --bundle --minify",
     "build": "npm run build:node && npm run build:browser"
   },

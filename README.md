@@ -65,22 +65,22 @@ app.listen(3000)
 
 - Conditionals
 ```js
-{{if (condition) }}
+{{:if (condition) }}
   // content
-{{else if(otherCondition) }}
+{{:else if(otherCondition) }}
   // content
-{{else}}
+{{:else}}
   // content
 {{/}}
 ```
 
 - Loops
 ```js
-{{for (value, index in array) }}
+{{:for (value, index in array) }}
   // content
 {{/}}
 
-{{for (value, key in object) }}
+{{:for (value, key in object) }}
   // content
 {{/}}
 ```
