@@ -1,6 +1,6 @@
-const tarkine = require('./src/index')
+const tarkine = require('../src/index')
 
-const output = tarkine.renderFile("./test.html", {
+const data = {
     username: "madhan",
     html: "<span>html code</span>",
     status: true,
@@ -10,6 +10,7 @@ const output = tarkine.renderFile("./test.html", {
         username: "key",
         age: 10000
     },
-})
+}
 
+const output = tarkine.renderFile("./example.html", data)
 console.log(output)

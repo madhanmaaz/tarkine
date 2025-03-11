@@ -1,6 +1,6 @@
 // registers
 
-module.exports = {
+const regStore = {
     uppercase(str) {
         return str.toUpperCase()
     },
@@ -97,4 +97,16 @@ module.exports = {
         return Math.floor(seconds) + " seconds ago"
     },
 
+}
+
+module.exports = {
+    regStore,
+    register(obj) {
+        if (typeof obj !== "object" || obj === null) {
+            console.warn("Warning: register expects a object.")
+            return
+        }
+
+        Object.assign(regStore, obj)
+    },
 }

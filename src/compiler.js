@@ -1,97 +1,78 @@
 const helpers = require("./helpers")
-const attributeModifier = require("./attributeModifier")
-
-const delimiterPattern = helpers.escapeRegExp(helpers.openDelimiter) +
-    "\\s*([~#=\\-\\/]|for\\s*\\(|if\\s*\\(|else)?\\s*([\\s\\S]*?)\\s*" +
-    helpers.escapeRegExp(helpers.closeDelimiter)
 
 function handleDirective(type, content) {
     switch (type) {
         case '/':
-            return "}\n;"
+            return "};"
 
-        // loops
-        case "for (":
-        case "for(": {
-            const [variables, data] = content.slice(0, -1).split(" in ")
-            const [key, value] = variables.split(",")
+        // loop
+        case "for": {
+            if (content.startsWith("(") && content.endsWith(")")) {
+                const [variables, data] = content.slice(1, -1).split(" in ")
+                const [key, value] = variables.split(",")
+                return `for(const [${value || '_'}, ${key}] of this.formatLoop(${data})){`
+            }
 
-            return `for(const [${value || '_'}, ${key}] of $$formatLoop(${data})){\n`
+            return `this.out += this.show(${content});`
         }
 
-        // conditions
-        case "if(":
-        case "if (":
-            return `if(${content}{\n`
+        // condition
+        case "if": {
+            if (content.startsWith("(") && content.endsWith(")")) {
+                return `if${content}{`
+            }
+
+            return `this.out += this.show(${content});`
+        }
+
         case "else":
-            return content.startsWith("if") ? `} else ${content}{\n` : "} else {\n"
+            return content.startsWith("if") ? `} else ${content}{` : "} else {"
 
         case '#': // comment
             return ''
 
         case '~': // Code (for direct JavaScript execution)
-            return `${content};\n`
+            return `${content};`
 
         case "-": // No-escape HTML output
-            return `__out += $$display(${content});\n`
+            return `this.out += ${content};`
 
         case '=': // Fully escaped HTML output
-            return `__out += $$escapeHTML(${content});\n`
+            return `this.out += this.escapeF(${content});`
 
         default: // escaped HTML output
-            return `__out += $$displayX(${content});\n`
+            return `this.out += this.show(${content});`
     }
 }
 
-function generate(template, errorStore) {
-    const regex = new RegExp(delimiterPattern, 'g')
-    let code = 'let __out = "";'
+function generate(template) {
+    const regexPattren = /\{\{(~|#|=|-|\/|for|if|else)?\s*([\s\S]*?)\s*\}\}/g
+    let code = "this.out = '';"
     let cursor = 0
-    let line = 1
     let match
 
-    while ((match = regex.exec(template)) !== null) {
+    while ((match = regexPattren.exec(template)) !== null) {
         const beforeMatch = template.slice(cursor, match.index)
         if (beforeMatch) {
-            code += `__out += ${JSON.stringify(beforeMatch)};\n`
+            code += `this.out += ${JSON.stringify(beforeMatch)};`
         }
-
-        line += (beforeMatch.match(/\n/g) || []).length
 
         const type = match[1] ? match[1].trim() : match[1]
         const content = match[2].trim()
-
-        code += `__err.l = ${line};\n`
-        errorStore.line = line
-
         const directiveCode = handleDirective(type, content)
         if (directiveCode) {
             code += directiveCode
         }
 
-        cursor = regex.lastIndex
+        cursor = regexPattren.lastIndex
     }
 
-    code += `__out += ${JSON.stringify(template.slice(cursor))};\nreturn __out;`
-
-    return `
-    const __err = { l: 0 }; 
-    try { ${code} } 
-    catch(error) {
-        __err.error = error;
-        __err.template = ${JSON.stringify(template)}
-        return __err; 
-    }`
+    code += `this.out += ${JSON.stringify(template.slice(cursor))}; return this.out;`
+    return code
 }
 
 function compile(template) {
-    const errorStore = { line: 0 }
-
-    try {
-        return generate(attributeModifier.modify(template), errorStore)
-    } catch (error) {
-        throw helpers.throwError("TemplateCompileError", error, filePath, template, errorStore.line)
-    }
+    return generate(helpers.replaceVoidAttributes(template))
 }
 
 module.exports = {

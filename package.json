@@ -1,8 +1,10 @@
 {
   "name": "tarkine",
-  "version": "0.0.3",
-  "description": "tarkine - A powerful and flexible template engine for Node.js applications.",
-  "main": "src/index.js",
+  "version": "0.0.5",
+  "description": "tarkine - template engine.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "browser": "dist/browser.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/madhanmaaz/tarkine"
@@ -12,13 +14,15 @@
     "url": "http://madhanmaaz.netlify.app/"
   },
   "files": [
-    "src/",
+    "dist/",
     "README.md",
-    "LICENSE",
-    "test.html",
-    "test.js"
+    "LICENSE"
   ],
-  "scripts": {},
+  "scripts": {
+    "build:node": "esbuild src/index.js --outfile=dist/index.js --platform=node --format=cjs --bundle --minify && esbuild src/index.js --outfile=dist/index.mjs --platform=node --format=esm --bundle --minify",
+    "build:browser": "esbuild src/browser.js --outfile=dist/browser.js --platform=browser --global-name=tarkine --bundle --minify",
+    "build": "npm run build:node && npm run build:browser"
+  },
   "keywords": [
     "template",
     "engine",
@@ -29,5 +33,5 @@
     "tarkine template",
     "tarkine template engine"
   ],
-  "license": "ISC"
+  "license": "MIT"
 }

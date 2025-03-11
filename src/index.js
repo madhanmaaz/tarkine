@@ -2,32 +2,25 @@ const path = require("path")
 const fs = require("fs")
 
 const dataFormatter = require("./dataFormatter")
+const registers = require("./registers")
 const compiler = require("./compiler")
 const helpers = require("./helpers")
-const registers = require("./registers")
-
-function register(obj) {
-    if (typeof obj !== "object" || obj === null) {
-        console.warn("Warning: register expects a non-null object")
-        return
-    }
-
-    Object.assign(registers, obj)
-}
 
 function alterFilePath(filePath) {
     if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
         return path.resolve(path.join(filePath, `/index.${helpers.ext}`))
     }
 
-    return filePath = !path.extname(filePath) ? `${filePath}.${helpers.ext}` : filePath
+    return filePath = !path.extname(filePath)
+        ? `${filePath}.${helpers.ext}`
+        : filePath
 }
 
 function include(parentFilePath, includeReference, data = {}) {
     const filePath = alterFilePath(path.resolve(path.dirname(parentFilePath), includeReference))
 
     if (!fs.existsSync(filePath)) {
-        throw helpers.throwError("IncludeError", new Error(`File not found: ${includeReference}`), parentFilePath, '', 0)
+        throw new Error(`File not found: ${filePath}`)
     }
 
     return function __includeRenderer__() {
@@ -35,79 +28,45 @@ function include(parentFilePath, includeReference, data = {}) {
     }
 }
 
-function render(template, data = {}, callback) {
+function render(template, data = {}) {
     const dataOptions = {
-        ...registers,
         ...data,
-        include: include.bind(null, ''),
-        ...dataFormatter,
+        $reg: registers.regStore,
+        include: include.bind(null, '')
     }
 
-    const func = new Function(Object.keys(dataOptions).join(','), compiler.compile(template, ''))
-    const output = func(...Object.values(dataOptions))
+    const func = new Function(
+        Object.keys(dataOptions).join(','),
+        compiler.compile(template)
+    )
 
-    if (typeof callback === "function") {
-        if (typeof output === "string") {
-            callback(null, output)
-        } else {
-            callback(
-                helpers.throwError("RenderError", output.error, '', output.template, output.l),
-                null
-            )
-        }
-
-        return
-    }
-
-    if (typeof output === "string") {
-        return output
-    }
-
-    throw helpers.throwError("RenderError", output.error, '', output.template, output.l)
+    return func.call(dataFormatter, ...Object.values(dataOptions))
 }
 
-function renderFile(filePath, data = {}, callback) {
-    filePath = alterFilePath(filePath)
+function renderFile(filePath, data = {}) {
     const dataOptions = {
-        ...registers,
         ...data,
-        include: include.bind(null, filePath),
-        ...dataFormatter,
+        $reg: registers.regStore,
+        include: include.bind(null, filePath)
     }
 
     let func = helpers.caches.get(filePath)
     if (!func) {
         const template = fs.readFileSync(filePath, "utf-8")
-        func = new Function(Object.keys(dataOptions).join(','), compiler.compile(template, filePath))
+        func = new Function(
+            Object.keys(dataOptions).join(','),
+            compiler.compile(template)
+        )
         helpers.caches.set(filePath, func)
     }
 
-    const output = func(...Object.values(dataOptions))
-
-    if (typeof callback === "function") {
-        if (typeof output === "string") {
-            callback(null, output)
-        } else {
-            callback(
-                helpers.throwError("RenderError", output.error, filePath, output.template, output.l),
-                null
-            )
-        }
-
-        return
-    }
-
-    if (typeof output === "string") {
-        return output
-    }
-
-    throw helpers.throwError("RenderError", output.error, '', output.template, output.l)
+    return func.call(dataFormatter, ...Object.values(dataOptions))
 }
 
 module.exports = {
     render,
     renderFile,
-    register,
+    register: registers.register,
     compile: compiler.compile,
     resetCache: helpers.caches.reset,
 }
