@@ -5,12 +5,12 @@ const helpers = require("./helpers")
 
 function render(template, data = {}, callback) {
     const dataOptions = {
+        ...data,
+        $: registers.regStore,
         include: (filePath, data) => {
             if (typeof callback !== "function") return ''
             return callback(filePath, data)
         },
-        ...data,
-        $reg: registers.regStore,
     }
 
     let func = helpers.caches.get(template)

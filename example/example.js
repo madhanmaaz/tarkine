@@ -12,5 +12,13 @@ const data = {
     },
 }
 
+// register global data
+tarkine.register({
+    format(a) {
+        if (typeof a !== "string") return ''
+        return a.toUpperCase()
+    }
+})
+
 const output = tarkine.renderFile("./example.html", data)
 console.log(output)

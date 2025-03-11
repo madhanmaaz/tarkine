@@ -31,7 +31,7 @@ function include(parentFilePath, includeReference, data = {}) {
 function render(template, data = {}) {
     const dataOptions = {
         ...data,
-        $reg: registers.regStore,
+        $: registers.regStore,
         include: include.bind(null, '')
     }
 
@@ -46,7 +46,7 @@ function render(template, data = {}) {
 function renderFile(filePath, data = {}) {
     const dataOptions = {
         ...data,
-        $reg: registers.regStore,
+        $: registers.regStore,
         include: include.bind(null, filePath)
     }
 
