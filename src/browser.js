@@ -30,5 +30,8 @@ function render(template, data = {}, callback) {
 }
 
 module.exports = {
-    render
+    render,
+    compile: compiler.compile,
+    register: registers.register,
+    resetCache: helpers.caches.reset,
 }
