@@ -1,6 +1,6 @@
 {
   "name": "tarkine",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "tarkine - template engine for nodeJS.",
   "main": "dist/index.js",
   "browser": "dist/browser.js",
@@ -13,15 +13,11 @@
     "url": "http://madhanmaaz.netlify.app/"
   },
   "files": [
-    "dist/",
+    "src",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "build:node": "esbuild src/index.js --outfile=dist/index.js --platform=node --bundle --minify",
-    "build:browser": "esbuild src/browser.js --outfile=dist/browser.js --platform=browser --global-name=tarkine --bundle --minify",
-    "build": "npm run build:node && npm run build:browser"
-  },
+  "scripts": {},
   "keywords": [
     "tarkine template engine",
     "tarkine template",
