@@ -1,7 +1,7 @@
 {
   "name": "tarkine",
-  "version": "0.0.8",
-  "description": "tarkine - template engine.",
+  "version": "0.0.9",
+  "description": "tarkine - template engine for nodeJS.",
   "main": "dist/index.js",
   "browser": "dist/browser.js",
   "repository": {
@@ -23,14 +23,14 @@
     "build": "npm run build:node && npm run build:browser"
   },
   "keywords": [
+    "tarkine template engine",
+    "tarkine template",
+    "tarkine",
     "template",
     "engine",
     "html",
     "rendering",
-    "express",
-    "tarkine",
-    "tarkine template",
-    "tarkine template engine"
+    "express"
   ],
   "license": "MIT"
 }

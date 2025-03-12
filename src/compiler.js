@@ -2,20 +2,20 @@ const helpers = require("./helpers")
 
 function handleDirective(type, content) {
     switch (type) {
-        case '/':
+        case '/if':
+        case '/for':
             return "};"
 
         // loop
         case ":for": {
             const [variables, data] = content.slice(1, -1).split(" in ")
-            const [key, value] = variables.split(",")
-            return `for(const [${value || '_'}, ${key}] of this.formatLoop(${data})){`
+            const [value, index = '__index'] = variables.split(",").map(v => v.trim())
+            return `for(const [${index}, ${value}] of this.formatLoop(${data})){`
         }
 
         // condition
         case ":if":
             return `if${content}{`
-
 
         case ":else":
             return content.startsWith("if") ? `} else ${content}{` : "} else {"
@@ -38,7 +38,7 @@ function handleDirective(type, content) {
 }
 
 function generate(template) {
-    const regexPattren = /\{\{\s*(~|#|=|-|\/|:for|:if|:else)?\s*([\s\S]*?)\s*\}\}/g
+    const regexPattren = /\{\{\s*(~|#|=|-|\/if|\/for|:for|:if|:else)?\s*([\s\S]*?)\s*\}\}/g
     let code = "this.out = '';"
     let cursor = 0
     let match

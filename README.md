@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/madhanmaaz/tarkine/master/banner.jpg">
 </p>
 
-<p align="center">Tarkine is a template engine for Node.js applications. It provides a simple syntax for creating dynamic HTML templates with various features like comments, escaping, conditionals, loops, includes, blocks, and code execution.</p>
+<p align="center">Tarkine is a template engine for Node.js applications. It provides a simple syntax for creating dynamic HTML templates with various features like global store, comments, escaping, conditionals, loops, includes, and code execution.</p>
 
 [![npm version](https://img.shields.io/npm/v/tarkine.svg)](https://www.npmjs.com/package/tarkine)
 [![Downloads](https://img.shields.io/npm/dm/tarkine.svg)](https://www.npmjs.com/package/tarkine)
@@ -71,18 +71,18 @@ app.listen(3000)
   // content
 {{:else}}
   // content
-{{/}}
+{{/if}}
 ```
 
 - Loops
 ```js
 {{:for (value, index in array) }}
   // content
-{{/}}
+{{/for}}
 
 {{:for (value, key in object) }}
   // content
-{{/}}
+{{/for}}
 ```
 
 - Includes
@@ -97,7 +97,7 @@ app.listen(3000)
 }}
 ```
 
-- Attributes
+- Void Attributes
 ```js
 <div>
     <button disabled="isLoggedIn">Login</button>
@@ -105,15 +105,16 @@ app.listen(3000)
 </div>
 ```
 
-### Add Custom Registers
+### Add Custom Data
 - Global data can be registered and used across all templates:
 ```js
 const tarkine = require('tarkine')
 
-tarkine.register({ 
-  siteName: 'My Website'
+tarkine.store.set("default", { 
+  siteName: 'My Website',
+  description: "Global data can be registered and used across all templates."
 })
 
 
-// access: {{ $.siteName }}
+// access: <title>{{ $.default.siteName }}</title>
 ```

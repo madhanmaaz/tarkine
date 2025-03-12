@@ -13,16 +13,16 @@ fully escape {{= html }} <!-- including includes -->
 <p>else if</p>
 {{:else}}
 <p>else</p>
-{{/}}
+{{/if}}
 
 <!-- loops -->
 {{:for (value, index in array) }}
 <li>{{ index }} - {{ value }}</li>
-{{/}}
+{{/for}}
 
 {{:for (value, key in object) }}
-<li>{{key }} - {{ value }}</li>
-{{/}}
+<li>{{ $.helpers.format(key) }} - {{ value }}</li>
+{{/for}}
 
 <!-- includes -->
 {{ include("./button", { text: "click" }) }}
@@ -41,6 +41,6 @@ const newVar = "this is new var"
 {{ total(1, 2) }}
 {{ newVar }}
 
-<!-- attributes -->
+<!-- void attributes -->
 <button disabled="islogin">login</button>
 <button disabled="islogin !== true">login</button>

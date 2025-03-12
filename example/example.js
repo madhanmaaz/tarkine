@@ -10,10 +10,11 @@ const data = {
         username: "key",
         age: 10000
     },
+    text: "this is text"
 }
 
 // register global data
-tarkine.register({
+tarkine.store.set("helpers", {
     format(a) {
         if (typeof a !== "string") return ''
         return a.toUpperCase()

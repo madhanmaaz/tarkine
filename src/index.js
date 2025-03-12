@@ -2,18 +2,22 @@ const path = require("path")
 const fs = require("fs")
 
 const dataFormatter = require("./dataFormatter")
-const registers = require("./registers")
 const compiler = require("./compiler")
 const helpers = require("./helpers")
+const store = require("./store")
 
 function alterFilePath(filePath) {
     if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
         return path.resolve(path.join(filePath, `/index.${helpers.ext}`))
     }
 
-    return filePath = !path.extname(filePath)
-        ? `${filePath}.${helpers.ext}`
-        : filePath
+    return path.extname(filePath)
+        ? filePath
+        : path.format({
+            dir: path.dirname(filePath),
+            name: path.basename(filePath),
+            ext: `.${helpers.ext}`
+        })
 }
 
 function include(parentFilePath, includeReference, data = {}) {
@@ -31,22 +35,26 @@ function include(parentFilePath, includeReference, data = {}) {
 function render(template, data = {}) {
     const dataOptions = {
         ...data,
-        $: registers.regStore,
+        $: store.getAll(),
         include: include.bind(null, '')
     }
 
-    const func = new Function(
-        Object.keys(dataOptions).join(','),
-        compiler.compile(template)
-    )
+    let func = helpers.caches.get(template)
+    if (!func) {
+        func = new Function(
+            Object.keys(dataOptions).join(','),
+            compiler.compile(template)
+        )
+        helpers.caches.set(template, func)
+    }
 
     return func.call(dataFormatter, ...Object.values(dataOptions))
 }
 
-function renderFile(filePath, data = {}) {
+function renderFile(filePath, data = {}, callback) {
     const dataOptions = {
         ...data,
-        $: registers.regStore,
+        $: store.getAll(),
         include: include.bind(null, filePath)
     }
 
@@ -60,13 +68,18 @@ function renderFile(filePath, data = {}) {
         helpers.caches.set(filePath, func)
     }
 
-    return func.call(dataFormatter, ...Object.values(dataOptions))
+    const output = func.call(dataFormatter, ...Object.values(dataOptions))
+    if (typeof callback === "function") {
+        return callback(null, output)
+    }
+
+    return output
 }
 
 module.exports = {
     render,
     renderFile,
-    register: registers.register,
+    store,
     compile: compiler.compile,
-    resetCache: helpers.caches.reset,
+    resetCache: helpers.caches.clear,
 }
