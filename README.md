@@ -135,3 +135,12 @@ Tarkine.store.set("default", {
 {{ $.formatBytes(1024) }}
 {{ $.isEmail('test@example.com') }}
 ```
+
+# Browser support
+```html
+<script src="https://cdn.jsdelivr.net/npm/tarkine@1.0.2/src/browser.min.js"></script>
+<script>
+  const output = Tarkine.render("<h1>{{ name }}</h1>", { name: "Tarkine" })
+  console.log(output)
+</script>
+```
