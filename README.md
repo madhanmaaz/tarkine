@@ -35,7 +35,7 @@ const app = express()
 
 
 app.set("view engine", Tarkine.ext) // .tark files
-app.engine("html", Tarkine.renderFile)
+app.engine(Tarkine.ext, Tarkine.renderFile)
 
 app.get("/", (req, res) => {
     res.render("index", {
