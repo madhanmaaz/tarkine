@@ -1,36 +1,51 @@
-const dataFormatter = require("./dataFormatter")
 const compiler = require("./compiler")
 const helpers = require("./helpers")
 const store = require("./store")
 
-function render(template, data = {}, callback) {
-    const dataOptions = {
-        ...data,
-        $: store.getAll(),
-        include: (filePath, data) => {
-            if (typeof callback !== "function") return ''
-            return callback(filePath, data)
-        },
-    }
-
+function render(template, data = {}, includeCallback) {
     let func = helpers.caches.get(template)
     if (!func) {
-        func = new Function(
-            Object.keys(dataOptions).join(','),
-            compiler.compile(template)
-        )
-        helpers.caches.set(template, func)
+        try {
+            func = new Function(
+                `$,__show,__loop,include,{${Object.keys(data)}}`,
+                compiler.compile(template)
+            )
+
+            helpers.caches.set(template, func)
+        } catch (error) {
+            throw new Error(`CompileError: ${error.message}\nSOURCE: CODE`)
+        }
     }
 
-    return func.call(
-        dataFormatter,
-        ...Object.values(dataOptions)
+    const include = typeof includeCallback === "function"
+        ? includeCallback
+        : () => { return '' }
+
+    const output = func(
+        store.getAll(),
+        helpers.__show,
+        helpers.__loop,
+        include,
+        data
     )
+
+    if (typeof output !== "string") {
+        helpers.throwError(
+            "RenderError",
+            null,
+            output.e,
+            output.l,
+            template
+        )
+    }
+
+    return output
 }
 
 module.exports = {
     render,
     store,
+    ext: helpers.ext,
     compile: compiler.compile,
     resetCache: helpers.caches.clear,
 }

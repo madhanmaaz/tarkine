@@ -1,7 +1,6 @@
 const path = require("path")
 const fs = require("fs")
 
-const dataFormatter = require("./dataFormatter")
 const compiler = require("./compiler")
 const helpers = require("./helpers")
 const store = require("./store")
@@ -13,62 +12,95 @@ function alterFilePath(filePath) {
 
     return path.extname(filePath)
         ? filePath
-        : path.format({
-            dir: path.dirname(filePath),
-            name: path.basename(filePath),
-            ext: `.${helpers.ext}`
-        })
+        : `${filePath}.${helpers.ext}`
 }
 
-function include(parentFilePath, includeReference, data = {}) {
+function include(parentFilePath, includeReference, data) {
     const filePath = alterFilePath(path.resolve(path.dirname(parentFilePath), includeReference))
 
     if (!fs.existsSync(filePath)) {
         throw new Error(`File not found: ${filePath}`)
     }
 
-    return function __includeRenderer__() {
-        return renderFile(filePath, data)
-    }
+    return renderFile(filePath, data)
 }
 
-function render(template, data = {}) {
-    const dataOptions = {
-        ...data,
-        $: store.getAll(),
-        include: include.bind(null, '')
-    }
-
+function render(template, data = {}, callback) {
     let func = helpers.caches.get(template)
     if (!func) {
-        func = new Function(
-            Object.keys(dataOptions).join(','),
-            compiler.compile(template)
-        )
-        helpers.caches.set(template, func)
+        try {
+            func = new Function(
+                `$,__show,__loop,include,{${Object.keys(data)}}`,
+                compiler.compile(template)
+            )
+
+            helpers.caches.set(template, func)
+        } catch (error) {
+            throw new Error(`CompileError: ${error.message}\nSOURCE: CODE`)
+        }
     }
 
-    return func.call(dataFormatter, ...Object.values(dataOptions))
+    const output = func(
+        store.getAll(),
+        helpers.__show,
+        helpers.__loop,
+        include.bind(null, ''),
+        data
+    )
+
+    if (typeof output !== "string") {
+        helpers.throwError(
+            "RenderError",
+            null,
+            output.e,
+            output.l,
+            template
+        )
+    }
+
+    if (typeof callback === "function") {
+        return callback(null, output)
+    }
+
+    return output
 }
 
 function renderFile(filePath, data = {}, callback) {
-    const dataOptions = {
-        ...data,
-        $: store.getAll(),
-        include: include.bind(null, filePath)
-    }
-
     let func = helpers.caches.get(filePath)
     if (!func) {
         const template = fs.readFileSync(filePath, "utf-8")
-        func = new Function(
-            Object.keys(dataOptions).join(','),
-            compiler.compile(template)
-        )
-        helpers.caches.set(filePath, func)
+
+        try {
+            func = new Function(
+                `$,__show,__loop,include,{${Object.keys(data)}}`,
+                compiler.compile(template)
+            )
+
+            helpers.caches.set(filePath, func)
+        } catch (error) {
+            throw new Error(`CompileError: ${error.message}\nSOURCE: ${filePath}`)
+        }
     }
 
-    const output = func.call(dataFormatter, ...Object.values(dataOptions))
+    const output = func(
+        store.getAll(),
+        helpers.__show,
+        helpers.__loop,
+        include.bind(null, filePath),
+        data
+    )
+
+    if (typeof output !== "string") {
+        const template = fs.readFileSync(filePath, "utf-8")
+        helpers.throwError(
+            "RenderError",
+            filePath,
+            output.e,
+            output.l,
+            template
+        )
+    }
+
     if (typeof callback === "function") {
         return callback(null, output)
     }
@@ -80,6 +112,7 @@ module.exports = {
     render,
     renderFile,
     store,
+    ext: helpers.ext,
     compile: compiler.compile,
     resetCache: helpers.caches.clear,
 }

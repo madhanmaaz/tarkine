@@ -1,32 +1,36 @@
 {
   "name": "tarkine",
-  "version": "1.0.0",
-  "description": "tarkine - template engine for nodeJS.",
-  "main": "dist/index.js",
-  "browser": "dist/browser.js",
+  "version": "1.0.2",
+  "description": "Tarkine - A lightweight and high-performance template engine for Node.js, designed for speed and simplicity.",
+  "main": "src/index.js",
+  "browser": "src/browser.min.js",
+  "scripts": {
+    "build": "esbuild src/browser.js --outfile=src/browser.min.js --platform=browser --global-name=Tarkine --bundle --minify"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/madhanmaaz/tarkine"
   },
   "author": {
     "name": "madhanmaaz",
-    "url": "http://madhanmaaz.netlify.app/"
+    "url": "https://madhanmaaz.netlify.app/"
   },
-  "files": [
-    "src",
-    "README.md",
-    "LICENSE"
-  ],
-  "scripts": {},
   "keywords": [
-    "tarkine template engine",
-    "tarkine template",
-    "tarkine",
-    "template",
-    "engine",
-    "html",
-    "rendering",
-    "express"
+    "template-engine",
+    "nodejs",
+    "templating",
+    "fast",
+    "lightweight",
+    "performance",
+    "server-side",
+    "html-rendering",
+    "express",
+    "dynamic-templates",
+    "minimalist",
+    "templating-library",
+    "view-engine",
+    "SSR",
+    "simple"
   ],
   "license": "MIT"
 }

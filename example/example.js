@@ -1,4 +1,4 @@
-const tarkine = require('../src/index')
+const Tarkine = require('../')
 
 const data = {
     username: "madhan",
@@ -14,12 +14,9 @@ const data = {
 }
 
 // register global data
-tarkine.store.set("helpers", {
-    format(a) {
-        if (typeof a !== "string") return ''
-        return a.toUpperCase()
-    }
+Tarkine.store.set("isString", (value) => {
+    return typeof value === "string"
 })
 
-const output = tarkine.renderFile("./example.html", data)
+const output = Tarkine.renderFile("./example.tark", data)
 console.log(output)

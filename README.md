@@ -1,8 +1,9 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/madhanmaaz/tarkine/master/banner.jpg">
+    <img src="https://raw.githubusercontent.com/madhanmaaz/tarkine/master/logo.webp">
 </p>
-
-<p align="center">Tarkine is a template engine for Node.js applications. It provides a simple syntax for creating dynamic HTML templates with various features like global store, comments, escaping, conditionals, loops, includes, and code execution.</p>
+<p align="center">
+Tarkine - A lightweight and high-performance template engine for Node.js, designed for speed and simplicity.
+</p>
 
 [![npm version](https://img.shields.io/npm/v/tarkine.svg)](https://www.npmjs.com/package/tarkine)
 [![Downloads](https://img.shields.io/npm/dm/tarkine.svg)](https://www.npmjs.com/package/tarkine)
@@ -15,17 +16,12 @@ npm install tarkine
 
 ### Usage
 ```js
-const tarkine = require('tarkine');
+const Tarkine = require('tarkine');
 
-const output = tarkine.renderFile("./template.html", {
+const output = Tarkine.renderFile("./template.tark", {
     username: "John Doe",
     html: "<span>Some HTML</span>",
-    status: true,
-    array: [1, 2, 3],
-    object: {
-        username: "johndoe",
-        age: 30
-    },
+    status: true
 });
 
 console.log(output);
@@ -33,13 +29,13 @@ console.log(output);
 
 ### Usage in expressjs:
 ```js
-const tarkine = require("tarkine") // import
+const Tarkine = require("tarkine") // import
 const express = require("express")
 const app = express()
 
 
-app.set("view engine", "html")
-app.engine("html", tarkine.renderFile)
+app.set("view engine", Tarkine.ext) // .tark files
+app.engine("html", Tarkine.renderFile)
 
 app.get("/", (req, res) => {
     res.render("index", {
@@ -49,25 +45,24 @@ app.get("/", (req, res) => {
 
 app.listen(3000)
 ```
-
 ## Syntax
 - Comments
 ```js
 {{# This is a comment }}
 ```
 
-- Escaping
+- Expression
 ```js
 {{ variable }} // Escaped output
 {{- variable }} // Unescaped output
-{{= variable }} // Fully escaped output (including includes)
 ```
 
 - Conditionals
 ```js
-{{:if (condition) }}
+<!-- condition -->
+{{:if status }}
   // content
-{{:else if(otherCondition) }}
+{{:else if status == 0 }}
   // content
 {{:else}}
   // content
@@ -76,18 +71,19 @@ app.listen(3000)
 
 - Loops
 ```js
-{{:for (value, index in array) }}
+<!-- loops -->
+{{:for value, index in array }}
   // content
 {{/for}}
 
-{{:for (value, key in object) }}
+{{:for value, key in object }}
   // content
 {{/for}}
 ```
 
 - Includes
 ```js
-{{ include("./partial", { data: "value" }) }}
+{{- include("./header", { links: ["home", "code", "about"] }) }}
 ```
 
 - Code Execution
@@ -97,7 +93,7 @@ app.listen(3000)
 }}
 ```
 
-- Void Attributes
+- Conditionals Void Attributes
 ```js
 <div>
     <button disabled="isLoggedIn">Login</button>
@@ -105,16 +101,37 @@ app.listen(3000)
 </div>
 ```
 
+
 ### Add Custom Data
 - Global data can be registered and used across all templates:
 ```js
-const tarkine = require('tarkine')
+const Tarkine = require('tarkine')
 
-tarkine.store.set("default", { 
+Tarkine.store.set("default", { 
   siteName: 'My Website',
-  description: "Global data can be registered and used across all templates."
+  description: "...."
 })
 
 
 // access: <title>{{ $.default.siteName }}</title>
+```
+
+### Build-in helpers
+```js
+{{ $.uppercase("...") }}
+{{ $.capitalize("...") }}
+{{ $.lowercase("...") }}
+{{ $.randomNum(1, 100) }}
+{{ $.randomStr(10) }}
+{{ $.randomChar() }}
+{{ $.formatDate('2024-01-01', 'MM/DD/YYYY') }}
+{{ $.formatTime('2024-01-01T15:30:00') }}
+{{ $.timeSince('2023-01-01T00:00:00Z') }}
+{{ $.truncate('This is a long sentence that needs truncation', 20) }}
+{{ $.slugify('Hello World! This is a test') }}
+{{ $.currency(1234.56) }}
+{{ $.currency(1234.56, 'EUR', 'de-DE') }}
+{{ $.pluralize(1, 'apple', 'apples') }}
+{{ $.formatBytes(1024) }}
+{{ $.isEmail('test@example.com') }}
 ```
