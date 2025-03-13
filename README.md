@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://raw.githubusercontent.com/madhanmaaz/tarkine/master/logo.webp">
+    <img src="https://raw.githubusercontent.com/madhanmaaz/tarkine/master/logo.webp" height="300">
 </p>
 <p align="center">
 Tarkine - A lightweight and high-performance template engine for Node.js, designed for speed and simplicity.
