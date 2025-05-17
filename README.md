@@ -116,26 +116,6 @@ Tarkine.store.set("default", {
 // access: <title>{{ $.default.siteName }}</title>
 ```
 
-### Build-in helpers
-```js
-{{ $.uppercase("...") }}
-{{ $.capitalize("...") }}
-{{ $.lowercase("...") }}
-{{ $.randomNum(1, 100) }}
-{{ $.randomStr(10) }}
-{{ $.randomChar() }}
-{{ $.formatDate('2024-01-01', 'MM/DD/YYYY') }}
-{{ $.formatTime('2024-01-01T15:30:00') }}
-{{ $.timeSince('2023-01-01T00:00:00Z') }}
-{{ $.truncate('This is a long sentence that needs truncation', 20) }}
-{{ $.slugify('Hello World! This is a test') }}
-{{ $.currency(1234.56) }}
-{{ $.currency(1234.56, 'EUR', 'de-DE') }}
-{{ $.pluralize(1, 'apple', 'apples') }}
-{{ $.formatBytes(1024) }}
-{{ $.isEmail('test@example.com') }}
-```
-
 # Browser support
 ```html
 <script src="https://cdn.jsdelivr.net/npm/tarkine@1.0.2/src/browser.min.js"></script>

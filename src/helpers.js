@@ -2,9 +2,13 @@ module.exports = {
     ext: "tark",
     caches: new Map(),
     alterVoidAttributes(template) {
-        const voidAttributesPattern = /\s+(checked|disabled|readonly|required|autofocus|multiple|selected|hidden|open|ismap|defer|async|novalidate|formnovalidate|allowfullscreen|itemscope|reversed|autoplay|controls|loop|muted|default)\s*=\s*"([^"]*?)"/g
-        return template.replace(voidAttributesPattern, (match, attr, value) => {
-            return ` {{:if(${value})}}${attr}{{/if}}`
+        const openingTagPattern = /<(?!!\/)([^\/!\s>][^>]*)>/g
+        const voidPattern = /\s+(checked|disabled|readonly|required|autofocus|multiple|selected|hidden|open|ismap|defer|async|novalidate|formnovalidate|allowfullscreen|itemscope|reversed|autoplay|controls|loop|muted|default)\s*=\s*"([^"]*?)"/gi
+
+        return template.replace(openingTagPattern, (tag) => {
+            return tag.replace(voidPattern, (match, attr, value) => {
+                return ` {{:if(${value})}}${attr}{{/if}}`
+            })
         })
     },
     createErrorSnippet(template, errLine) {
