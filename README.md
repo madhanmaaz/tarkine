@@ -118,7 +118,7 @@ Tarkine.store.set("default", {
 
 # Browser support
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tarkine@1.0.2/src/browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tarkine@latest/src/browser.min.js"></script>
 <script>
   const output = Tarkine.render("<h1>{{ name }}</h1>", { name: "Tarkine" })
   console.log(output)
