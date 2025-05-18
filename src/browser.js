@@ -2,6 +2,8 @@ const compiler = require("./compiler")
 const helpers = require("./helpers")
 const store = require("./store")
 
+const emptyInclude = () => ''
+
 function render(template, data = {}, includeCallback) {
     let func = helpers.caches.get(template)
     if (!func) {
@@ -19,7 +21,7 @@ function render(template, data = {}, includeCallback) {
 
     const include = typeof includeCallback === "function"
         ? includeCallback
-        : () => { return '' }
+        : emptyInclude
 
     const output = func(
         store.getAll(),

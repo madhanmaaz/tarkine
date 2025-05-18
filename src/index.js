@@ -114,5 +114,6 @@ module.exports = {
     store,
     ext: helpers.ext,
     compile: compiler.compile,
+    caches: helpers.caches,
     resetCache: helpers.caches.clear,
 }

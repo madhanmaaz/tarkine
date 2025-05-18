@@ -2,6 +2,30 @@ const helpers = require("./helpers")
 
 function handleDirective(type, content) {
     switch (type) {
+        case ":macro": {
+            return `function ${content} {const __out = [];`
+        }
+
+        case "/macro": {
+            return `return __out.join('');}`
+        }
+
+        case ":extends": {
+            return `__out.push(include(${content}, (function () {const __slots = {};`
+        }
+
+        case "/extends": {
+            return `return __slots;})()));`
+        }
+
+        case ":slot": {
+            return `__slots[${content}] = (function (){const __out = [];`
+        }
+
+        case "/slot": {
+            return `return __out.join('');})();`
+        }
+
         case "/if": // close bracket
         case "/for":
             return '}'
@@ -36,8 +60,8 @@ function handleDirective(type, content) {
 }
 
 function generate(template) {
-    const regex = /\{\{\s*(#|-|~|\/if|\/for|:if|:else|:for)?\s*([\s\S]*?)\s*\}\}/g
-    let code = 'const __out = [];'
+    const regex = /\{\{(#|-|~|\/if|\/for|\/macro|\/extends|\/slot|:if|:else|:for|:macro|:extends|:slot)?\s*([\s\S]*?)\s*\}\}/g
+    const code = ['const __out = [];']
     let cursor = 0
     let line = 1
     let match
@@ -45,7 +69,7 @@ function generate(template) {
     while ((match = regex.exec(template)) !== null) {
         const beforeMatch = template.slice(cursor, match.index)
         if (beforeMatch) {
-            code += `__out.push(${JSON.stringify(beforeMatch)});`
+            code.push(`__out.push(${JSON.stringify(beforeMatch)});`)
         }
 
         const type = match[1] ? match[1].trim() : match[1]
@@ -53,11 +77,11 @@ function generate(template) {
 
         // debug line mark
         line += (beforeMatch.match(/\n/g) || []).length
-        code += `__err.l = ${line};`
+        code.push(`__err.l = ${line};`)
 
         const directiveCode = handleDirective(type, content)
         if (directiveCode) {
-            code += directiveCode
+            code.push(directiveCode)
         }
 
         if (match[0].includes("\n")) {
@@ -67,8 +91,8 @@ function generate(template) {
         cursor = regex.lastIndex
     }
 
-    code += `__out.push(${JSON.stringify(template.slice(cursor))}); return __out.join('');`
-    return `const __err = { l: 0 }; try { ${code} } catch(e) {__err.e = e.message; return __err;}`
+    code.push(`__out.push(${JSON.stringify(template.slice(cursor))}); return __out.join('');`)
+    return `const __err = { l: 0 }; try { ${code.join('')} } catch(e) {__err.e = e.message; return __err;}`
 }
 
 function compile(template) {

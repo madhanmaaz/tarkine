@@ -1,10 +1,12 @@
 {
   "name": "tarkine",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Tarkine - A lightweight and high-performance template engine for Node.js, designed for speed and simplicity.",
   "main": "src/index.js",
   "browser": "src/browser.min.js",
   "scripts": {
+    "install": "npm i -g jest esbuild",
+    "test": "jest",
     "build": "esbuild src/browser.js --outfile=src/browser.min.js --platform=browser --global-name=Tarkine --bundle --minify"
   },
   "repository": {

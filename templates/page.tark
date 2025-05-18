@@ -1,0 +1,8 @@
+{{:extends "./layout" }}
+    {{:slot "head"}}
+    <title>Example layout</title>
+    {{/slot}}
+    {{:slot "body"}}
+    <h1>Body content</h1>
+    {{/slot}}
+{{/extends}}

@@ -7,7 +7,8 @@ Tarkine - A lightweight and high-performance template engine for Node.js, design
 
 [![npm version](https://img.shields.io/npm/v/tarkine.svg)](https://www.npmjs.com/package/tarkine)
 [![Downloads](https://img.shields.io/npm/dm/tarkine.svg)](https://www.npmjs.com/package/tarkine)
-[![License](https://img.shields.io/npm/l/tarkine.svg)](https://github.com/yourusername/tarkine/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/tarkine.svg)](https://github.com/madhanmaaz/tarkine/blob/master/LICENSE)
+[![VSCode](https://img.shields.io/badge/vscode-extension-blue?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=madhanmaaz.tarkine-vscode-extension)
 
 ## Installation
 ```bash
@@ -101,6 +102,38 @@ app.listen(3000)
 </div>
 ```
 
+- Macros
+```js
+{{:macro button(text, ...classes) }}
+  <button class="{{ classes.join(' ') }}">{{ text }}</button>
+{{/macro}}
+
+{{- button("Login", "btn", "is-primary") }}
+```
+
+- Layouts (Extend & Slot)
+  - Define layout:
+  ```html
+  <!-- layout.tark -->
+  <!DOCTYPE html>
+  <html>
+    <head>{{- head }}</head>
+    <body>{{- body }}</body>
+  </html>
+  ```
+
+  - Use layout:
+  ```html
+  {{:extends "./layout"}}
+    {{:slot "head"}}
+      <title>Page Title</title>
+    {{/slot}}
+
+    {{:slot "body"}}
+      <main><h1>Hello Layout</h1></main>
+    {{/slot}}
+  {{/extends}}
+  ```
 
 ### Add Custom Data
 - Global data can be registered and used across all templates:
@@ -111,16 +144,21 @@ Tarkine.store.set("default", {
   siteName: 'My Website',
   description: "...."
 })
+```
 
-
-// access: <title>{{ $.default.siteName }}</title>
+- Access in template:
+```html
+<title>{{ $.default.siteName }}</title>
 ```
 
 # Browser support
 ```html
-<script src="https://cdn.jsdelivr.net/npm/tarkine@1.0.2/src/browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tarkine@latest/src/browser.min.js"></script>
 <script>
   const output = Tarkine.render("<h1>{{ name }}</h1>", { name: "Tarkine" })
   console.log(output)
 </script>
 ```
+
+# VSCode Extension Support
+- [Tarkine VS code extension](https://marketplace.visualstudio.com/items?itemName=madhanmaaz.tarkine-vscode-extension) 

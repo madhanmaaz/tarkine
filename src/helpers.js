@@ -1,3 +1,11 @@
+const escapeChars = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+}
+
 module.exports = {
     ext: "tark",
     caches: new Map(),
@@ -32,19 +40,14 @@ module.exports = {
     __show(data) {
         // Return an empty string if the data is null, undefined or false.
         if (data == null || data === false) return ''
-        const escapeChars = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;',
-        }
+        if(typeof data === "object") return JSON.stringify(data)
 
         return String(data).replace(/[&<>"']/g, char => escapeChars[char])
     },
     __loop(data) {
         if (!data || typeof data !== "object") {
-            throw new TypeError(`Expected array or object for loops, but received ${typeof data}`)
+            console.warn(`Expected array or object for loops, but received ${typeof data}: ${data}`)
+            return []
         }
 
         return Array.isArray(data)
