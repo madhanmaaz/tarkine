@@ -108,6 +108,29 @@ function renderFile(filePath, data = {}, callback) {
     return output
 }
 
+function honoRenderer(options = {
+    views: path.join(__dirname, 'views')
+}) {
+    return async (c, next) => { 
+        c.setRenderer((filePath, data) => {
+            const ext = path.extname(filePath)
+
+            if (!ext || ext !== `.${helpers.ext}`) {
+                filePath += `.${helpers.ext}`
+            }
+
+            return c.html(
+                renderFile(
+                    path.join(options.views, filePath),
+                    data
+                )
+            )
+        })
+
+        return await next()
+    }
+}
+
 module.exports = {
     render,
     renderFile,
@@ -116,4 +139,5 @@ module.exports = {
     compile: compiler.compile,
     caches: helpers.caches,
     resetCache: helpers.caches.clear,
+    honoRenderer
 }

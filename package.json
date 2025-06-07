@@ -1,11 +1,18 @@
 {
   "name": "tarkine",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "Tarkine - A lightweight and high-performance template engine for Node.js, designed for speed and simplicity.",
   "main": "src/index.js",
   "browser": "src/browser.min.js",
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md",
+    "templates",
+    "tests"
+  ],
   "scripts": {
-    "install": "npm i -g jest esbuild",
+    "dev-install": "npm i -g jest esbuild",
     "test": "jest",
     "build": "esbuild src/browser.js --outfile=src/browser.min.js --platform=browser --global-name=Tarkine --bundle --minify"
   },
@@ -19,6 +26,12 @@
   },
   "keywords": [
     "template-engine",
+    "hono",
+    "hono-template-engine",
+    "hono-renderer",
+    "hono-render",
+    "hono-render-file",
+    "hono-render-view",
     "nodejs",
     "templating",
     "fast",

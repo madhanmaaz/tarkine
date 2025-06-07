@@ -46,6 +46,25 @@ app.get("/", (req, res) => {
 
 app.listen(3000)
 ```
+
+### Usage in hono:
+```js
+import { Hono } from "hono"
+import { honoRenderer } from "tarkine"
+
+const app = new Hono()
+
+app.use(honoRenderer({
+    views: "./views"
+}))
+
+app.get("/", (c) => {
+    c.render("index", {
+        username: "tarkine"
+    })
+})
+```
+
 ## Syntax
 - Comments
 ```js
