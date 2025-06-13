@@ -66,6 +66,12 @@ function render(template, data = {}, callback) {
 }
 
 function renderFile(filePath, data = {}, callback) {
+    const ext = path.extname(filePath)
+
+    if (!ext || ext !== `.${helpers.ext}`) {
+        filePath += `.${helpers.ext}`
+    }
+    
     let func = helpers.caches.get(filePath)
     if (!func) {
         const template = fs.readFileSync(filePath, "utf-8")
@@ -109,16 +115,10 @@ function renderFile(filePath, data = {}, callback) {
 }
 
 function honoRenderer(options = {
-    views: path.join(__dirname, 'views')
+    views: "./views"
 }) {
-    return async (c, next) => { 
+    return async (c, next) => {
         c.setRenderer((filePath, data) => {
-            const ext = path.extname(filePath)
-
-            if (!ext || ext !== `.${helpers.ext}`) {
-                filePath += `.${helpers.ext}`
-            }
-
             return c.html(
                 renderFile(
                     path.join(options.views, filePath),

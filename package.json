@@ -1,6 +1,6 @@
 {
   "name": "tarkine",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Tarkine - A lightweight and high-performance template engine for Node.js, designed for speed and simplicity.",
   "main": "src/index.js",
   "browser": "src/browser.min.js",
